@@ -16,7 +16,7 @@ export class BubbleMenu {
       'divider',
       { label: 'H1', node: 'heading', attrs: { level: 1 }, className: 'jot-bubble-btn-h1' },
       { label: 'H2', node: 'heading', attrs: { level: 2 }, className: 'jot-bubble-btn-h2' },
-      { label: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 8 2"/><path d="M21 6H10"/><path d="M21 12H10"/><path d="M21 18H10"/></svg>', node: 'blockquote', className: 'jot-bubble-btn-blockquote' },
+      { label: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="10" y1="8" x2="20" y2="8"/><line x1="10" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="20" y2="16"/></svg>', node: 'blockquote', className: 'jot-bubble-btn-blockquote' },
     ]
 
     for (const btn of this._buttons) {
