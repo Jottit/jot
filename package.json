@@ -1,0 +1,27 @@
+{
+  "name": "jot",
+  "version": "0.1.0",
+  "description": "A headless ProseMirror editor that stores markdown.",
+  "keywords": [
+    "markdown",
+    "editor",
+    "prosemirror",
+    "wysiwyg",
+    "headless"
+  ],
+  "homepage": "https://github.com/Jottit/jot#readme",
+  "bugs": {
+    "url": "https://github.com/Jottit/jot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jottit/jot.git"
+  },
+  "license": "MIT",
+  "author": "Simon B. Carstensen",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test"
+  }
+}
