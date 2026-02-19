@@ -1,5 +1,5 @@
 {
-  "name": "jot",
+  "name": "@jottit/jot",
   "version": "0.1.0",
   "description": "A headless ProseMirror editor that stores markdown.",
   "keywords": [
@@ -23,5 +23,17 @@
   "main": "src/index.js",
   "scripts": {
     "test": "node --test"
+  },
+  "dependencies": {
+    "prosemirror-commands": "^1.7.1",
+    "prosemirror-history": "^1.5.0",
+    "prosemirror-keymap": "^1.2.3",
+    "prosemirror-markdown": "^1.13.4",
+    "prosemirror-model": "^1.25.4",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-view": "^1.41.6"
+  },
+  "devDependencies": {
+    "jsdom": "^28.1.0"
   }
 }
