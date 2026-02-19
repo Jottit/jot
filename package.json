@@ -1,6 +1,6 @@
 {
   "name": "@jottit/jot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A headless ProseMirror editor that stores markdown.",
   "keywords": [
     "markdown",
@@ -20,8 +20,19 @@
   "license": "MIT",
   "author": "Simon B. Carstensen",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/jot.js",
+  "exports": {
+    ".": "./dist/jot.js",
+    "./dist/jot.css": "./dist/jot.css"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "esbuild src/index.js --bundle --format=esm --outfile=dist/jot.js --external:prosemirror-*",
+    "build:css": "esbuild src/ui/bubble-menu.css --bundle --outfile=dist/jot.css",
     "test": "node --test"
   },
   "dependencies": {
@@ -34,6 +45,7 @@
     "prosemirror-view": "^1.41.6"
   },
   "devDependencies": {
+    "esbuild": "^0.27.3",
     "jsdom": "^28.1.0"
   }
 }

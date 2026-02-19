@@ -10,9 +10,11 @@ export { schema } from './schema.js'
 
 export class Jot {
   constructor(element, options = {}) {
-    const { initialValue = '', onChange } = options
+    const { initialValue = '', onChange, ui } = options
 
     this._onChange = onChange
+    this._bubbleMenu = null
+
     this._view = new EditorView(element, {
       state: EditorState.create({
         doc: defaultMarkdownParser.parse(initialValue),
@@ -34,8 +36,17 @@ export class Jot {
         if (tr.docChanged && this._onChange) {
           this._onChange(this.getValue())
         }
+        if (this._bubbleMenu) {
+          this._bubbleMenu.update(this._view)
+        }
       },
     })
+
+    if (ui?.bubbleMenu) {
+      import('./ui/bubble-menu.js').then(({ BubbleMenu }) => {
+        this._bubbleMenu = new BubbleMenu(this._view)
+      })
+    }
   }
 
   getValue() {
@@ -52,6 +63,9 @@ export class Jot {
   }
 
   destroy() {
+    if (this._bubbleMenu) {
+      this._bubbleMenu.destroy()
+    }
     this._view.destroy()
   }
 }
