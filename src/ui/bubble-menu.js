@@ -1,4 +1,4 @@
-import { toggleMark } from 'prosemirror-commands'
+import { toggleMark, setBlockType, wrapIn, lift } from 'prosemirror-commands'
 
 export class BubbleMenu {
   constructor(view) {
@@ -12,19 +12,31 @@ export class BubbleMenu {
     this._buttons = [
       { label: 'B', mark: 'strong', className: 'jot-bubble-btn-bold' },
       { label: 'I', mark: 'em', className: 'jot-bubble-btn-italic' },
-      { label: '<>', mark: 'code', className: 'jot-bubble-btn-code' },
       { label: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>', action: 'link', className: 'jot-bubble-btn-link' },
+      'divider',
+      { label: 'H1', node: 'heading', attrs: { level: 1 }, className: 'jot-bubble-btn-h1' },
+      { label: 'H2', node: 'heading', attrs: { level: 2 }, className: 'jot-bubble-btn-h2' },
+      { label: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 8 2"/><path d="M21 6H10"/><path d="M21 12H10"/><path d="M21 18H10"/></svg>', node: 'blockquote', className: 'jot-bubble-btn-blockquote' },
     ]
 
     for (const btn of this._buttons) {
+      if (btn === 'divider') {
+        const divider = document.createElement('span')
+        divider.className = 'jot-bubble-divider'
+        this._el.appendChild(divider)
+        continue
+      }
+
       const button = document.createElement('button')
       button.type = 'button'
       button.className = `jot-bubble-btn ${btn.className}`
       button.innerHTML = btn.label
       if (btn.mark) {
         button.addEventListener('click', () => this._toggleMark(btn.mark))
-      } else {
+      } else if (btn.action === 'link') {
         button.addEventListener('click', () => this._addLink())
+      } else if (btn.node) {
+        button.addEventListener('click', () => this._toggleBlock(btn.node, btn.attrs))
       }
       btn.el = button
       this._el.appendChild(button)
@@ -60,10 +72,30 @@ export class BubbleMenu {
     return found
   }
 
+  _hasBlock(state, nodeName, attrs) {
+    const { from, to } = state.selection
+    let found = false
+    state.doc.nodesBetween(from, to, (node) => {
+      if (node.type.name === nodeName) {
+        if (!attrs || Object.keys(attrs).every((k) => node.attrs[k] === attrs[k])) {
+          found = true
+        }
+      }
+    })
+    return found
+  }
+
   _updateActiveStates(state) {
     for (const btn of this._buttons) {
-      const markName = btn.mark || 'link'
-      const active = this._hasMark(state, markName)
+      if (btn === 'divider') continue
+      let active
+      if (btn.mark) {
+        active = this._hasMark(state, btn.mark)
+      } else if (btn.action === 'link') {
+        active = this._hasMark(state, 'link')
+      } else if (btn.node) {
+        active = this._hasBlock(state, btn.node, btn.attrs)
+      }
       btn.el.classList.toggle('jot-bubble-btn-active', active)
     }
   }
@@ -71,6 +103,29 @@ export class BubbleMenu {
   _toggleMark(markName) {
     const markType = this._view.state.schema.marks[markName]
     toggleMark(markType)(this._view.state, this._view.dispatch)
+    this._view.focus()
+  }
+
+  _toggleBlock(nodeName, attrs) {
+    const { state, dispatch } = this._view
+    const nodeType = state.schema.nodes[nodeName]
+
+    if (nodeName === 'blockquote') {
+      if (this._hasBlock(state, 'blockquote')) {
+        lift(state, dispatch)
+      } else {
+        wrapIn(nodeType)(state, dispatch)
+      }
+      this._view.focus()
+      return
+    }
+
+    // For headings: toggle back to paragraph if already active
+    if (this._hasBlock(state, nodeName, attrs)) {
+      setBlockType(state.schema.nodes.paragraph)(state, dispatch)
+    } else {
+      setBlockType(nodeType, attrs)(state, dispatch)
+    }
     this._view.focus()
   }
 
