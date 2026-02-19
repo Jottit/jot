@@ -20,11 +20,7 @@ export class BubbleMenu {
       const button = document.createElement('button')
       button.type = 'button'
       button.className = `jot-bubble-btn ${btn.className}`
-      if (btn.action) {
-        button.innerHTML = btn.label
-      } else {
-        button.textContent = btn.label
-      }
+      button.innerHTML = btn.label
       if (btn.mark) {
         button.addEventListener('click', () => this._toggleMark(btn.mark))
       } else {
