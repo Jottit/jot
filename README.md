@@ -71,6 +71,10 @@ const editor = new Jot(document.getElementById('editor'), {
 | `Mod-b` | Toggle bold |
 | `Mod-i` | Toggle italic |
 
+## Credits
+
+Built with the assistance of [Claude](https://claude.ai) (Anthropic).
+
 ## License
 
 MIT
