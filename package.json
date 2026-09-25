@@ -1,6 +1,6 @@
 {
   "name": "@jottit/jot",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A headless ProseMirror editor with markdown storage and an optional bubble menu.",
   "keywords": [
     "markdown",
